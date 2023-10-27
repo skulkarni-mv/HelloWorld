@@ -1,0 +1,148 @@
+From 396a1151cef5eaf97f0b8da70d859b5ec239751e Mon Sep 17 00:00:00 2001
+From: Shubham Kulkarni <skulkarni@mvista.com>
+Date: Thu, 19 Oct 2023 16:13:54 +0530
+Subject: [PATCH] Use inherit allarch instead of PACKAGE_ARCH = "all"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Source: MontaVista Software, LLC
+MR: 128927
+Type: Defect Fix
+Disposition: Local
+ChangeID: fb9e0a84bcd2d5976496b2c4edb68ae12ee18534
+Description:
+
+ 'bitbake initramfs-image' leads to failure because of how the initramfs-image recipe handles
+ the do_package task. It attempts to package using PACKAGE_ARCH = "all", implying that this
+ recipe doesn’t depend on any specific architecture. However, Yocto’s recommended approach
+ is to replace PACKAGE_ARCH = "all" with "inherit allarch" in both the initramfs-image recipe
+ and its dependencies since Dunfell i.e. CGX 3.1
+
+Signed-off-by: Anand Je Sypureddy <anandje@mvista.com>
+Signed-off-by: Shubham Kulkarni <skulkarni@mvista.com>
+Reviewed-by: Armin Kuster <akuster@mvista.com>
+---
+ recipes-core/initrdscripts/initramfs-jffs2_0.1.bb               | 2 +-
+ recipes-core/initrdscripts/initramfs-module-block_1.0.bb        | 2 +-
+ .../initrdscripts/initramfs-module-check-modules_1.0.bb         | 2 +-
+ recipes-core/initrdscripts/initramfs-module-ext3_1.0.bb         | 2 +-
+ recipes-core/initrdscripts/initramfs-module-initfs_1.0.bb       | 2 +-
+ recipes-core/initrdscripts/initramfs-module-loop_1.0.bb         | 2 +-
+ recipes-core/initrdscripts/initramfs-module-nfs_1.0.bb          | 2 +-
+ recipes-core/initrdscripts/initramfs-module-squashfs_1.0.bb     | 2 +-
+ recipes-core/initrdscripts/initramfs-uniboot_1.0.bb             | 2 +-
+ 9 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/recipes-core/initrdscripts/initramfs-jffs2_0.1.bb b/recipes-core/initrdscripts/initramfs-jffs2_0.1.bb
+index 3d803aa..edea4bf 100644
+--- a/recipes-core/initrdscripts/initramfs-jffs2_0.1.bb
++++ b/recipes-core/initrdscripts/initramfs-jffs2_0.1.bb
+@@ -8,6 +8,6 @@ do_install() {
+         install -m 0755 ${WORKDIR}/jffs2boot.sh ${D}/init
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /init "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-module-block_1.0.bb b/recipes-core/initrdscripts/initramfs-module-block_1.0.bb
+index be2c0c9..9183ef2 100644
+--- a/recipes-core/initrdscripts/initramfs-module-block_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-module-block_1.0.bb
+@@ -10,6 +10,6 @@ do_install() {
+         install -m 0755 ${WORKDIR}/85-blockboot.sh ${D}/initrd.d/
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /initrd.d/* "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-module-check-modules_1.0.bb b/recipes-core/initrdscripts/initramfs-module-check-modules_1.0.bb
+index df07f1e..eda336b 100644
+--- a/recipes-core/initrdscripts/initramfs-module-check-modules_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-module-check-modules_1.0.bb
+@@ -10,6 +10,6 @@ do_install() {
+         install -m 0755 ${WORKDIR}/90-check-modules.sh ${D}/initrd.d/
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /initrd.d/* "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-module-ext3_1.0.bb b/recipes-core/initrdscripts/initramfs-module-ext3_1.0.bb
+index d76f751..3caf2d3 100644
+--- a/recipes-core/initrdscripts/initramfs-module-ext3_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-module-ext3_1.0.bb
+@@ -10,6 +10,6 @@ do_install() {
+     install -m 0755 ${WORKDIR}/80-ext3.sh ${D}/initrd.d/
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /initrd.d/* "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-module-initfs_1.0.bb b/recipes-core/initrdscripts/initramfs-module-initfs_1.0.bb
+index 3220629..42d383c 100644
+--- a/recipes-core/initrdscripts/initramfs-module-initfs_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-module-initfs_1.0.bb
+@@ -11,6 +11,6 @@ do_install() {
+         install -m 0755 ${WORKDIR}/10-initfs.sh ${D}/initrd.d/
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /initrd.d/* "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-module-loop_1.0.bb b/recipes-core/initrdscripts/initramfs-module-loop_1.0.bb
+index 657c98f..a80358f 100644
+--- a/recipes-core/initrdscripts/initramfs-module-loop_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-module-loop_1.0.bb
+@@ -12,6 +12,6 @@ do_install() {
+         install -m 0755 ${WORKDIR}/80-loopboot.sh ${D}/initrd.d/
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /initrd.d/* "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-module-nfs_1.0.bb b/recipes-core/initrdscripts/initramfs-module-nfs_1.0.bb
+index 2ecabe0..1c126fc 100644
+--- a/recipes-core/initrdscripts/initramfs-module-nfs_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-module-nfs_1.0.bb
+@@ -11,6 +11,6 @@ do_install() {
+         install -m 0755 ${WORKDIR}/80-nfsboot.sh ${D}/initrd.d/
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /initrd.d/* "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-module-squashfs_1.0.bb b/recipes-core/initrdscripts/initramfs-module-squashfs_1.0.bb
+index b0a1b18..c8a3064 100644
+--- a/recipes-core/initrdscripts/initramfs-module-squashfs_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-module-squashfs_1.0.bb
+@@ -10,6 +10,6 @@ do_install() {
+     install -m 0755 ${WORKDIR}/80-squashfs.sh ${D}/initrd.d/
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /initrd.d/* "
+ LICENSE="MIT"
+diff --git a/recipes-core/initrdscripts/initramfs-uniboot_1.0.bb b/recipes-core/initrdscripts/initramfs-uniboot_1.0.bb
+index e172a07..a98241c 100644
+--- a/recipes-core/initrdscripts/initramfs-uniboot_1.0.bb
++++ b/recipes-core/initrdscripts/initramfs-uniboot_1.0.bb
+@@ -15,7 +15,7 @@ do_install() {
+ 	fi
+ }
+ 
+-PACKAGE_ARCH = "all"
++inherit allarch
+ FILES_${PN} += " /init "
+ FILES_${PN} += " /dev/ "
+ FILES_${PN} += " /key.image "
+-- 
+2.42.0
+
